@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>Abraham Adesanya Polytechnic Quiz</title>
+      <link rel="stylesheet" href="{% static 'assets/css/style.css'%}"/>
+    </head>
+    <body>
+      <div class="container">
+        <header>
+          <div class="logo-container">
+            <img src="{% static 'assets/images/Abraham_Adesanya_Polytechnic.png' %}" alt="School Logo" class="school-logo">
+            <div>
+              <h1>Abraham Adesanya Polytechnic</h1>
+              <p>Online Quiz Platform</p>
+            </div>
+          </div>
+          <div class="header-controls">
+            <button id="dark-mode-toggle" class="btn-icon" aria-label="Toggle dark mode">
+              🌙 Dark Mode
+            </button>
+          </div>
+        </header>
+
+        <nav class="main-nav">
+          <button class="nav-link active" data-page="home">🏠 Home</button>
+          <button class="nav-link" data-page="quiz">❓ Quiz</button>
+          <button class="nav-link" data-page="competition">🏆 Competition</button> 
+          <button class="nav-link" data-page="leaderboard">📊 Leaderboard</button>
+          <button class="nav-link" data-page="contact">✉️ Contact</button>
+        </nav>
+        <main>
+            <!-- HOME PAGE -->
+          <div id="home-page" class="page active">
+            <div class="welcome-section">
+              <h2>Welcome to Our Quiz Platform</h2>
+              <p>Test your knowledge across various subjects and track your progress!</p>
+              <div id="greeting" class="active"></div>
+            </div>
+            <div class="features-grid">
+              <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Randomized Questions</h3>
+                <p>Get a unique set of questions each time you take the quiz.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>Timed Challenge</h3>
+                <p>Test your knowledge against the clock.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Track Progress</h3>
+                <p>View your scores and improvement over time.</p>
+              </div>
+              <div class="feature-card">
+                <div class="feature-icon">🌓</div>
+                <h3>Dark Mode</h3>
+                <p>Choose a comfortable viewing experience.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUIZPAGE -->
+          <div id="quiz-page" class="page active">
+            <form id="user-form">
+              <!-- {% csrf_token %} -->
+              <h2>Login to Start Quiz</h2>
+              <input type="text" name="name" id="name" placeholder="Enter your name" required aria-label="Your name">
+              <input type="text" name="matric" id="matric" placeholder="Enter your Matric Number" required aria-label="Matric number">
+              <select name="field" id="field" required aria-label="Select your field">
+                <option value="" disabled selected>Select your field</option>
+                <option>Computer Science</option>
+                <option>Science Laboratory Technology</option>
+                <option>Mass Communication</option>
+              </select>
+              <button type="submit" class="btn" id="start-quiz-btn">Start Quiz</button>
+            </form>
+
+              <!-- UNKNOWN -->
+            <div id="start-message" class="active">Your time starts now...</div>
+            <div id="timer" class="active">Time Left: <span id="time">60</span>s</div>
+            
+            <div class="quiz-progress active">
+              <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
+              </div>
+              <span id="progress-text">0/5</span>
+            </div>
+
+            <div id="quiz-box" class="active">
+              <div class="question-header">
+                <span id="question-category" class="category-tag"></span>
+              </div>
+              <h2 id="question">Loading question...</h2>
+              <div id="options"></div>
+              <button id="next-btn" class="btn">Next</button>
+            </div>
+
+            <div id="result-box" class="active">
+              <h2>Quiz Completed!</h2>
+              <p id="user-info"></p>
+              <div id="summary"></div>
+              <div class="result-details">
+                <div class="result-card correct">
+                  <span id="correct-count">0</span>
+                  <span>Correct</span>
+                </div>
+                <div class="result-card wrong">
+                  <span id="wrong-count">0</span>
+                  <span>Wrong</span>
+                </div>
+                <div class="result-card score">
+                  <span id="percentage">0</span>%
+                  <span>Score</span>
+                </div>
+              </div>
+              <button onclick="location.reload()" class="btn">Try Again</button>
+              <button id="view-leaderboard" class="btn secondary">View Leaderboard</button>
+            </div>
+          </div>
+              <!-- LEADERBOARD -->
+          <div id="leaderboard-page" class="page active">
+            <h2>Leaderboard</h2>
+            <div class="leaderboard-controls">
+              <select id="leaderboard-filter">
+                <option value="all">All Fields</option>
+                <option>Computer Science</option>
+                <option>Science Laboratory Technology</option>
+                <option>Mass Communication</option>
+              </select>
+              <button id="refresh-leaderboard" class="btn-icon">🔄</button>
+            </div>
+            <div id="leaderboard">
+              <div class="leaderboard-header">
+                <span>Rank</span>
+                <span>Name</span>
+                <span>Score</span>
+                <span>Field</span>
+                <span>Date</span>
+              </div>
+              <ul id="leaderboard-list"></ul>
+            </div>
+            <h3>Your Past Scores</h3>
+            <div id="past-scores"></div>
+          </div>
+
+
+            <!-- COMPETITIONPAGE -->
+          <div id="competition-page" class="page active">
+            <div class="competition-header">
+              <h2>Weekly Quiz Competition</h2>
+              <p>Compete against other students for the top score!</p>
+            </div>
+            
+            <div class="competition-content">
+              <div class="competition-rules">
+                <h3>🏆 Competition Rules</h3>
+                <ul>
+                  <li>⏱️ 90 second time limit</li>
+                  <li>❓ 20 random questions from all departments</li>
+                  <li>👤 One attempt per week</li>
+                  <li>🏅 Top 10 scores displayed on leaderboard</li>
+                </ul>
+              </div>
+              <div class="competition-start">
+                <button id="start-competition" class="btn competition-btn">
+                  🚀 Start Competition
+                </button>
+                <p class="competition-note">Note: You'll need to enter your name & matric no when starting</p>
+              </div>
+            </div>
+          </div>
+
+          <div id="contact-page" class="page active">
+            <h2>Contact Us</h2>
+            <form id="contact-form" method="post">
+              {% csrf_token %}
+              <input type="text" name="name" placeholder="Your Name" required>
+              <input type="email" name="email" placeholder="Your Email" required>
+              <textarea name="message" placeholder="Your Message" required></textarea>
+              <button type="submit" class="btn">Send Message</button>
+            </form>
+          </div>
+        </main>
+            <!-- FOOTER SECTION -->
+        <footer class="attribution-footer">
+          <p>&copy; 2025 Abraham Adesanya Polytechnic. All rights reserved.</p>
+          <p>Quiz Platform developed by <span id="developer-name">Computer Science Department</span></p>
+          <div class="accessibility-statement">
+            <p>♿ Welcome to the world of science</p>
+          </div>
+        </footer>
+      </div>
+
+      <audio id="tick-sound" src="{% static 'tick.mp3' %}" preload="auto"></audio>
+      <audio id="correct-sound" src="{% static 'correct.mp3' %}" preload="auto"></audio>
+      <audio id="wrong-sound" src="{% static 'wrong.mp3' %}" preload="auto"></audio>
+      <audio id="time-warning-sound" src="{% static 'time-warning.mp3' %}" preload="auto"></audio>
+      <audio id="time-up-sound" src="{% static 'time-up.mp3' %}" preload="auto"></audio>
+      
+      <script src="{% static 'assets/js/script.js' %}"></script>
+    </body>
+</html>
+
+
