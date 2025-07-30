@@ -1,3 +1,6 @@
+from .models import ContactMessage
+from django.views.decorators.http import require_POST
+# Contact form API endpoint
 
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -6,6 +9,23 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+
+
+@csrf_exempt
+@require_POST
+def api_contact_message(request):
+    try:
+        data = json.loads(request.body)
+        name = data.get('name', '').strip()
+        email = data.get('email', '').strip()
+        message = data.get('message', '').strip()
+        if not name or not email or not message:
+            return JsonResponse({'status': 'error', 'message': 'All fields are required.'}, status=400)
+        ContactMessage.objects.create(name=name, email=email, message=message)
+        return JsonResponse({'status': 'success', 'message': 'Your message has been submitted.'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    
 
 def index(request):
     return render(request, 'pages/index.html')

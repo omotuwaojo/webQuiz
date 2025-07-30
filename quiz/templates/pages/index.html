@@ -176,13 +176,13 @@
 
           <div id="contact-page" class="page active">
             <h2>Contact Us</h2>
-            <form id="contact-form" method="post">
-              {% csrf_token %}
+            <form id="contact-form">
               <input type="text" name="name" placeholder="Your Name" required>
               <input type="email" name="email" placeholder="Your Email" required>
               <textarea name="message" placeholder="Your Message" required></textarea>
               <button type="submit" class="btn">Send Message</button>
             </form>
+            <div id="contact-feedback" style="margin-top:10px;"></div>
           </div>
         </main>
             <!-- FOOTER SECTION -->
