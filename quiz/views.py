@@ -1,7 +1,8 @@
+from django.db.models import Q
+from django.core.serializers.json import DjangoJSONEncoder
+from django.views.decorators.http import require_GET
 from .models import ContactMessage
 from django.views.decorators.http import require_POST
-# Contact form API endpoint
-
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .models import Department, UserProfile, Question, QuizResult
@@ -11,6 +12,29 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
+# API endpoint: Get all quiz results (optionally filtered by field)
+@require_GET
+def api_leaderboard(request):
+    field = request.GET.get('field')
+    results = QuizResult.objects.select_related('user__user', 'user__department').order_by('-percentage', '-id')
+    if field and field != 'all':
+        results = results.filter(user__department__name=field)
+    leaderboard = []
+    for res in results:
+        leaderboard.append({
+            'name': res.user.user.first_name,
+            'matric': res.user.matric,
+            'field': res.user.department.name if res.user.department else '',
+            'score': res.score,
+            'total': res.total,
+            'percentage': res.percentage,
+            'date': res.created_at.strftime('%Y-%m-%d %H:%M') if hasattr(res, 'created_at') and res.created_at else '',
+        })
+    return JsonResponse({'leaderboard': leaderboard}, encoder=DjangoJSONEncoder)
+
+
+
+# Contact form API endpoint
 @csrf_exempt
 @require_POST
 def api_contact_message(request):

@@ -1,3 +1,22 @@
+// Fetch leaderboard data from backend
+async function fetchLeaderboard(field = 'all') {
+  const url = `/api/leaderboard/?field=${encodeURIComponent(field)}`;
+  const response = await fetch(url);
+  if (!response.ok) throw new Error('Failed to fetch leaderboard');
+  const data = await response.json();
+  return data.leaderboard || [];
+}
+
+// Render leaderboard list
+function renderLeaderboard(list) {
+  const ul = elements.leaderboardList;
+  ul.innerHTML = '';
+  list.forEach((res, idx) => {
+    const li = document.createElement('li');
+    li.textContent = `${idx + 1}. ${res.name} (${res.matric}) - ${res.field} - Score: ${res.score}/${res.total} (${res.percentage}%) - ${res.date}`;
+    ul.appendChild(li);
+  });
+}
 // Fetch questions from Django API
 async function fetchQuestionsFromAPI(department) {
   try {
@@ -173,6 +192,32 @@ function updateActiveNav(pageId) {
 
 /* Event Listeners Setup - FULL CORRECTED VERSION */
 function setupEventListeners() {
+  // LEADERBOARD FILTER
+  const leaderboardFilter = document.getElementById('leaderboard-filter');
+  leaderboardFilter?.addEventListener('change', async function() {
+    await updateLeaderboard();
+  });
+
+  // LEADERBOARD REFRESH
+  const refreshBtn = document.getElementById('refresh-leaderboard');
+  refreshBtn?.addEventListener('click', async function() {
+    await updateLeaderboard();
+  });
+  // Update leaderboard on page show
+  document.querySelector('[data-page="leaderboard"]')?.addEventListener('click', async function() {
+    await updateLeaderboard();
+  });
+// Update leaderboard (fetch and render)
+async function updateLeaderboard() {
+  const filter = document.getElementById('leaderboard-filter');
+  const field = filter ? filter.value : 'all';
+  try {
+    const data = await fetchLeaderboard(field);
+    renderLeaderboard(data);
+  } catch (err) {
+    elements.leaderboardList.innerHTML = '<li>Failed to load leaderboard.</li>';
+  }
+}
   // 1. NAVIGATION LINKS - Fixed implementation
   const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach(link => {
