@@ -1,24 +1,11 @@
-      <!-- COMPETITION MODAL -->
-      <div id="competition-modal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
-        <div class="modal-content" style="background:#fff;padding:2rem;border-radius:8px;max-width:400px;width:90%;margin:auto;box-shadow:0 2px 8px rgba(0,0,0,0.2);position:relative;">
-          <button id="close-competition-modal" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
-          <h2>Enter Competition</h2>
-          <form id="competition-form">
-            <input type="text" name="comp_name" id="comp_name" placeholder="Full Name" required style="width:100%;margin-bottom:1rem;">
-            <input type="text" name="comp_matric" id="comp_matric" placeholder="Matric Number" required style="width:100%;margin-bottom:1rem;">
-            <button type="submit" class="btn" style="width:100%;">Start Competition</button>
-          </form>
-          <div id="competition-feedback" style="margin-top:10px;color:red;"></div>
-        </div>
-      </div>
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-      <title>Abraham Adesanya Polytechnic Quiz</title>
-      <link rel="stylesheet" href="{% static 'assets/css/style.css'%}"/>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Abraham Adesanya Polytechnic Quiz</title>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css'%}"/>
     </head>
     <body>
       <div class="container">
@@ -184,6 +171,19 @@
                 </button>
                 <p class="competition-note">Note: You'll need to enter your name & matric no when starting</p>
               </div>
+            </div>
+          </div>
+          <!-- COMPETITION MODAL -->
+          <div id="competition-modal" class="modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+            <div class="modal-content" style="background:#fff;padding:2rem;border-radius:8px;max-width:400px;width:90%;margin:auto;box-shadow:0 2px 8px rgba(0,0,0,0.2);position:relative;">
+              <button id="close-competition-modal" style="position:absolute;top:10px;right:10px;font-size:1.5rem;background:none;border:none;cursor:pointer;">&times;</button>
+              <h2>Enter Competition</h2>
+              <form id="competition-form">
+                <input type="text" name="comp_name" id="comp_name" placeholder="Full Name" required style="width:100%;margin-bottom:1rem;">
+                <input type="text" name="comp_matric" id="comp_matric" placeholder="Matric Number" required style="width:100%;margin-bottom:1rem;">
+                <button type="submit" class="btn" style="width:100%;">Start Competition</button>
+              </form>
+              <div id="competition-feedback" style="margin-top:10px;color:red;"></div>
             </div>
           </div>
 
