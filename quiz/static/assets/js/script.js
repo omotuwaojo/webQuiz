@@ -192,6 +192,75 @@ function updateActiveNav(pageId) {
 
 /* Event Listeners Setup - FULL CORRECTED VERSION */
 function setupEventListeners() {
+  // COMPETITION MODAL HANDLING
+  const competitionModal = document.getElementById('competition-modal');
+  const openCompetitionBtn = elements.startCompetitionBtn;
+  const closeCompetitionBtn = document.getElementById('close-competition-modal');
+  const competitionForm = document.getElementById('competition-form');
+  const competitionFeedback = document.getElementById('competition-feedback');
+
+  openCompetitionBtn?.addEventListener('click', function() {
+    competitionModal.style.display = 'flex';
+    competitionFeedback.textContent = '';
+    competitionForm.reset();
+  });
+
+  closeCompetitionBtn?.addEventListener('click', function() {
+    competitionModal.style.display = 'none';
+  });
+
+  competitionModal?.addEventListener('click', function(e) {
+    if (e.target === competitionModal) competitionModal.style.display = 'none';
+  });
+
+  competitionForm?.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const name = competitionForm.comp_name.value.trim();
+    const matric = competitionForm.comp_matric.value.trim().toUpperCase();
+    if (!name || !matric) {
+      competitionFeedback.textContent = 'Please enter your full name and matric number.';
+      return;
+    }
+    // Prevent multiple attempts per week
+    const lastAttempt = localStorage.getItem(`competition-${matric}`);
+    const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+    if (lastAttempt && new Date(lastAttempt).getTime() > oneWeekAgo) {
+      competitionFeedback.textContent = "You have already participated in this week's competition.";
+      return;
+    }
+    // Save timestamp of this attempt
+    localStorage.setItem(`competition-${matric}`, new Date().toISOString());
+
+    // Set competition state
+    quizState.username = name;
+    quizState.matric = matric;
+    quizState.field = "Competition";
+    quizState.isCompetition = true;
+
+    // Fetch general questions from backend
+    try {
+      const questions = await fetchQuestionsFromAPI(''); // '' or 'all' for general
+      const generalQs = questions.filter(q => q.question_type === 'GEN');
+      if (!generalQs.length) {
+        competitionFeedback.textContent = 'No general questions available for competition.';
+        return;
+      }
+      quizState.currentQuestions = shuffleArray(generalQs).slice(0, 20); // 20 questions
+      quizState.currentIndex = 0;
+      quizState.score = 0;
+      quizState.wrong = 0;
+      quizState.timeLeft = 90; // 90 seconds for competition
+      quizState.selected = false;
+
+      elements.greeting.textContent = `Good luck, ${name}!`;
+      competitionModal.style.display = 'none';
+      updateDisplay();
+      startTimer();
+      showQuizPage();
+    } catch (err) {
+      competitionFeedback.textContent = 'Failed to load competition questions.';
+    }
+  });
   // LEADERBOARD FILTER
   const leaderboardFilter = document.getElementById('leaderboard-filter');
   leaderboardFilter?.addEventListener('change', async function() {
